@@ -1,0 +1,17 @@
+# Roda os exemplos que não precisam de conta no Google Cloud a cada push.
+name: exemplos-locais
+on: [push, pull_request]
+jobs:
+  testar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r 01-local-e-colab/requirements.txt -r 05-bonus-quantico/requirements.txt
+      - run: python 01-local-e-colab/penguins_sklearn.py
+      - run: cd 04-treino-customizado && python trainer/train.py --data ../data/penguins.csv
+      - run: python 05-bonus-quantico/qubits_pennylane.py
+      - run: python 05-bonus-quantico/qubits_cirq.py
+      - run: python 02-bigquery-ml/run_bqml.py --project ci --mostrar-sql > /dev/null
